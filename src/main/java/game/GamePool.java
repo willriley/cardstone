@@ -15,11 +15,14 @@ import com.google.common.cache.RemovalNotification;
 import gui.Db;
 
 /**
- * Represents pool of all games that are going on.
- * @author ryan an willayyy
+ * Represents pool of all games that are going on. Uses
+ * a Guava LoadingCache to store as many games as it can in memory.
+ * However, if the cache is at max capacity, it uses serialization to keep
+ * track of evicted games.  
+ * @author Willay
  */
 public class GamePool {
-  private static final int POOL_SIZE = 1;
+  private static final int POOL_SIZE = 100;
   private static LoadingCache<Integer, Game> playersToGames = CacheBuilder
       .newBuilder()
       .maximumSize(POOL_SIZE)
@@ -84,8 +87,8 @@ public class GamePool {
 
     g1 = getGameByPlayerId(u1) == null ? gId
         : getGameByPlayerId(u1).getId();
-    g2 = getGameByPlayerId(u1) == null ? gId
-        : getGameByPlayerId(u1).getId();
+    g2 = getGameByPlayerId(u2) == null ? gId
+        : getGameByPlayerId(u2).getId();
 
     if (g1 != gId || g2 != gId) {
       System.out.println("already in game!");
